@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.felipelearn.livraria.dto.LivroRequest;
+import com.felipelearn.livraria.exception.LivroAlugadoException;
+import com.felipelearn.livraria.exception.LivroDevolvidoException;
+import com.felipelearn.livraria.exception.LivroNotFoundException;
+import com.felipelearn.livraria.exception.LocatarioNotFoundException;
 import com.felipelearn.livraria.domain.Aluguel;
 import com.felipelearn.livraria.domain.Livro;
 import com.felipelearn.livraria.domain.Locatario;
@@ -29,23 +33,23 @@ public class LivroService implements ILivroService {
         return _livroRepository.findAll().stream().filter(l -> l.isDisponivel()).toList();
     }
     
-    public Livro getById(Long id) throws Exception{
+    public Livro getById(Long id){
         Optional<Livro> livroDb = _livroRepository.findById(id);
         if( !livroDb.isPresent()){
-            throw new Exception("Livro not found");
+            throw new LivroNotFoundException();
         }
         return livroDb.get();
     }
 
-    public boolean alugar(Long livroId, String matricula) throws Exception{
+    public boolean alugar(Long livroId, String matricula){
         Livro livroDb = getById(livroId);
         if( !livroDb.alugar() ){
-            throw new Exception("Livro já alugado");
+            throw new LivroAlugadoException();
         }
 
         Locatario locatario =_locatarioService.findByMatricula(matricula);
         if(locatario == null){
-            throw new Exception("Locatário não encontrado");
+            throw new LocatarioNotFoundException();
         }
         Aluguel newAluguel = new Aluguel(new Date(), livroDb, locatario);
         _livroRepository.save(livroDb);
@@ -53,10 +57,10 @@ public class LivroService implements ILivroService {
         return true;
     }
     
-    public boolean devolver(Long livroId) throws Exception{
+    public boolean devolver(Long livroId) {
         Livro livroDb = getById(livroId);
         if( !livroDb.devolver() ){
-            throw new Exception("Livro já devolvido");
+            throw new LivroDevolvidoException();
         }
         _livroRepository.save(livroDb);
         Optional<Aluguel> aluguelDb  = _aluguelRepository.findAll()

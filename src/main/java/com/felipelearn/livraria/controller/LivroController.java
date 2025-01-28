@@ -28,44 +28,28 @@ public class LivroController {
 
     @GetMapping("{id}")
     public ResponseEntity getById(@PathVariable Long id){
-        try {
-            return ResponseEntity.ok(_livroService.getById(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(_livroService.getById(id));
     }
 
     @PostMapping("{id}/alugar")
     public ResponseEntity alugar(@PathVariable Long id, @RequestBody String matricula){
-        try {
-            boolean isAlugado = _livroService.alugar(id, matricula);
-            if(isAlugado)
-                return ResponseEntity.noContent().build();
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        boolean isAlugado = _livroService.alugar(id, matricula);
+        if(isAlugado)
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("{id}/devolver")
     public ResponseEntity devolver(@PathVariable Long id){
-        try {
-            boolean isDevolvido = _livroService.devolver(id);
-            if(isDevolvido)
-                return ResponseEntity.noContent().build();
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        boolean isDevolvido = _livroService.devolver(id);
+        if(isDevolvido)
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping()
     public ResponseEntity create(@RequestBody LivroRequest request ){
-        try {
-            Livro newLivro = _livroService.create(request);
-            return ResponseEntity.ok(newLivro);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Livro newLivro = _livroService.create(request);
+        return ResponseEntity.ok(newLivro);
     }
 }

@@ -7,8 +7,8 @@ import com.felipelearn.livraria.dto.LocatarioRequest;
 
 public interface ILocatarioService {
     List<Locatario> getAll();
-    Locatario getById(Long id) throws Exception;
-    void create(LocatarioRequest request) throws Exception ;
+    Locatario getById(Long id);
+    void create(LocatarioRequest request) ;
     void save(Locatario newLocatario);
     Locatario findByMatricula(String matricula);
 }

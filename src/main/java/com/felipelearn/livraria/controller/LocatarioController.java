@@ -30,20 +30,12 @@ public class LocatarioController {
 
     @GetMapping("{id}")
     public ResponseEntity getById(@PathVariable Long id){
-        try {
-            return ResponseEntity.ok(_locatarioService.getById(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(_locatarioService.getById(id));
     }
 
     @PostMapping()
     public ResponseEntity create(@RequestBody LocatarioRequest request){
-        try{
-            _locatarioService.create(request);
-            return ResponseEntity.noContent().build();
-        }catch(Exception e ){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        _locatarioService.create(request);
+        return ResponseEntity.noContent().build();
     }
 }

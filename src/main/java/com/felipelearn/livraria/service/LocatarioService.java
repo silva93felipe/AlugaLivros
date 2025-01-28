@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.felipelearn.livraria.domain.Locatario;
 import com.felipelearn.livraria.dto.LocatarioRequest;
+import com.felipelearn.livraria.exception.LocatarioNotFoundException;
+import com.felipelearn.livraria.exception.MatriculaUtilizadaException;
 import com.felipelearn.livraria.repository.LocatarioRepository;
 import com.felipelearn.livraria.service.interfaces.ILocatarioService;
 
@@ -23,19 +25,19 @@ public class LocatarioService implements ILocatarioService {
     }
 
     @Override
-    public Locatario getById(Long id) throws Exception {
+    public Locatario getById(Long id){
         Optional<Locatario> optional = _locatarioRepository.findById(id); 
         if( !optional.isPresent())
-            throw new Exception("Locatário não encontrado");
+            throw new LocatarioNotFoundException();
         
         return optional.get();
     }
 
     @Override
-    public void create(LocatarioRequest request) throws Exception  {
+    public void create(LocatarioRequest request)  {
         Locatario locatario = findByMatricula(request.matricula()); 
         if(locatario != null)
-            throw new Exception("Matricula já utilizada");
+            throw new MatriculaUtilizadaException();
         Locatario newLocatario = new Locatario(request.nome(),  request.matricula());
         save(newLocatario);
     }
