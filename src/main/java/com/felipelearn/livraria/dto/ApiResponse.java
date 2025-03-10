@@ -10,4 +10,18 @@ public class ApiResponse {
         this.isSuccess = isSuccess;
         this.data = data;
     }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    
 }

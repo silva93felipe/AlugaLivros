@@ -1,7 +1,8 @@
 package com.felipelearn.livraria.domain;
 
+import java.util.Calendar;
 import java.util.Date;
-
+import com.felipelearn.livraria.exception.DomainException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,18 +47,27 @@ public class Aluguel {
         return alugadoEm;
     }
     public void setAlugadoEm(Date alugadoEm) {
+        if(Calendar.getInstance().before(alugadoEm)){
+            throw new DomainException("Data de aluguel não pode ser superior a data atual.");
+        }
         this.alugadoEm = alugadoEm;
     }
     public Date getEntregueEm() {
         return entregueEm;
     }
     public void setEntregueEm(Date entregueEm) {
+        if(Calendar.getInstance().before(entregueEm)){
+            throw new DomainException("Data de entrega não pode ser superior a data atual.");
+        }
         this.entregueEm = entregueEm;
     }
     public Livro getLivro() {
         return livro;
     }
     public void setLivro(Livro livro) {
+        if(!livro.equals(null)){
+            throw new DomainException("Deve associar um livro válido.");
+        }
         this.livro = livro;
     }
 

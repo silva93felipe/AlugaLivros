@@ -1,5 +1,6 @@
 package com.felipelearn.livraria.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,10 +66,10 @@ public class LivroService implements ILivroService {
         _livroRepository.save(livroDb);
         Optional<Aluguel> aluguelDb  = _aluguelRepository.findAll()
                                    .stream()
-                                   .filter(e -> e.getLivro().getId() == livroId && e.getEntregueEm() == null)
+                                   .filter(e -> e.getLivro().getId() == livroId && e.getEntregueEm().equals(null))
                                    .findFirst();
         if(aluguelDb.isPresent()){
-            aluguelDb.get().devolver(new Date());
+            aluguelDb.get().devolver(Calendar.getInstance().getTime());
             _aluguelRepository.save(aluguelDb.get());
             return true;
         }

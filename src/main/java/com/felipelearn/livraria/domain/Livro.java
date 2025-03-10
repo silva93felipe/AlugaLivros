@@ -1,6 +1,11 @@
 package com.felipelearn.livraria.domain;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import com.felipelearn.livraria.exception.DomainException;
+import com.felipelearn.livraria.util.Utils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,6 +64,9 @@ public class Livro {
         return avalicao;
     }
     public void setAvalicao(int avalicao) {
+        if(avalicao < 1 || avalicao > 5){
+            throw new DomainException("A avaliação deve ser entre 1 e 5.");
+        }
         this.avalicao = avalicao;
     }
     public Long getId() {
@@ -68,24 +76,36 @@ public class Livro {
         return titulo;
     }
     public void setTitulo(String titulo) {
+        if(Utils.stringNotNullOrEmptyOrBlank(titulo)){
+            throw new DomainException("O título deve conter entre 1 e 100 caracters.");
+        }
         this.titulo = titulo;
     }
     public String getAutor() {
         return autor;
     }
     public void setAutor(String autor) {
+        if(Utils.stringNotNullOrEmptyOrBlank(autor)){
+            throw new DomainException("Deve preencher um autor.");
+        }
         this.autor = autor;
     }
     public String getEditora() {
         return editora;
     }
     public void setEditora(String editora) {
+        if(Utils.stringNotNullOrEmptyOrBlank(editora)){
+            throw new DomainException("Deve preencher uma editora.");
+        }
         this.editora = editora;
     }
     public int getAnoEdicao() {
         return anoEdicao;
     }
     public void setAnoEdicao(int anoEdicao) {
+        if(anoEdicao < 0 || anoEdicao > Calendar.getInstance().get(Calendar.YEAR)){
+            throw new DomainException("Deve preencher uma editora.");
+        }
         this.anoEdicao = anoEdicao;
     }
     public String getImagem() {
@@ -96,21 +116,19 @@ public class Livro {
     }
 
     public boolean alugar(){
-        if(isDisponivel()){
-            setDisponivel(false);
-            return true;
+        if(!isDisponivel()){
+            return false;
         }
-
-        return false;
+        setDisponivel(false);
+        return true;
     }
 
     public boolean devolver(){
-        if( !isDisponivel() ){
-            setDisponivel(true);
-            return true;
+        if(isDisponivel() ){
+            return false;
         }
-
-        return false;
+        setDisponivel(true);
+        return true;
     }
     
 }
