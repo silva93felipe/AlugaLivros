@@ -11,4 +11,5 @@ public interface ILivroService {
     public boolean alugar(Long livroId, String matricula);
     public boolean devolver(Long livroId);
     public Livro create(LivroRequest livro);
+    public void comentar(Long livroId, String comentario);
 }

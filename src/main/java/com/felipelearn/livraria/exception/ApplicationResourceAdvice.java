@@ -38,4 +38,16 @@ public class ApplicationResourceAdvice {
     public ApiResponse handleException(MatriculaUtilizadaException exception){
         return new ApiResponse(HttpStatus.BAD_REQUEST.value(), false, exception.getMessage());
     }
+
+    @ExceptionHandler(ComentarioInvalidoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse handleException(ComentarioInvalidoException exception){
+        return new ApiResponse(HttpStatus.BAD_REQUEST.value(), false, exception.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse handleException(Exception exception){
+        return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Houve um problema no momento. Tente novamente mais tarde.");
+    }
 }

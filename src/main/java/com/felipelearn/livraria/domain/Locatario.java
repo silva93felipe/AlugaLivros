@@ -1,7 +1,5 @@
 package com.felipelearn.livraria.domain;
 
-import java.util.List;
-
 import com.felipelearn.livraria.exception.DomainException;
 import com.felipelearn.livraria.util.Utils;
 
@@ -11,7 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 @Entity
-public class Locatario {
+public class Locatario extends EntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

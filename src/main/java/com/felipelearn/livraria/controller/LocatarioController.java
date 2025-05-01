@@ -1,7 +1,6 @@
 package com.felipelearn.livraria.controller;
 
-import java.util.List;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.felipelearn.livraria.domain.Locatario;
+import com.felipelearn.livraria.dto.ApiResponse;
 import com.felipelearn.livraria.dto.LocatarioRequest;
 import com.felipelearn.livraria.service.LocatarioService;
+import com.felipelearn.livraria.util.Constantes;
 
 @RestController
 @RequestMapping("/locatario")
@@ -24,17 +24,17 @@ public class LocatarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Locatario>> gelAll(){
-        return ResponseEntity.ok(_locatarioService.getAll());
+    public ResponseEntity<ApiResponse> getAll(){
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _locatarioService.getAll()));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getById(@PathVariable Long id){
-        return ResponseEntity.ok(_locatarioService.getById(id));
+    public ResponseEntity<ApiResponse> getById(@PathVariable Long id){
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _locatarioService.getById(id)));
     }
 
     @PostMapping()
-    public ResponseEntity create(@RequestBody LocatarioRequest request){
+    public ResponseEntity<ApiResponse> create(@RequestBody LocatarioRequest request){
         _locatarioService.create(request);
         return ResponseEntity.noContent().build();
     }

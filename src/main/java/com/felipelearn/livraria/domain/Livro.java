@@ -1,9 +1,6 @@
 package com.felipelearn.livraria.domain;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import com.felipelearn.livraria.exception.DomainException;
 import com.felipelearn.livraria.util.Utils;
 
@@ -12,12 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "livro")
-public class Livro {
+public class Livro extends EntityBase {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +34,11 @@ public class Livro {
     private int avalicao;
     // @OneToMany(mappedBy = "livro")
     // private List<Aluguel> aluguels;
+    // @OneToMany(mappedBy = "livro")
+    // private List<ComentarioLivro> comentarios;
     private Livro(){}
     public Livro(String titulo, String autor, String editora, String imagem, int anoEdicao){
+        
         setTitulo(titulo);
         setAutor(autor);
         setEditora(editora);
@@ -57,6 +56,7 @@ public class Livro {
     public boolean isDisponivel() {
         return disponivel;
     }
+
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
     }

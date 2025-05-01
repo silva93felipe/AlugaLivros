@@ -10,9 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class Aluguel {
+@Table(name = "aluguel_livro")
+public class AluguelLivro extends EntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,8 +30,8 @@ public class Aluguel {
     @JoinColumn(name = "locatario_id")
     private Locatario locatario;
   
-    private Aluguel(){}
-    public Aluguel(Date alugadoEm, Livro livro, Locatario locatario){
+    private AluguelLivro(){}
+    public AluguelLivro(Date alugadoEm, Livro livro, Locatario locatario){
         setAlugadoEm(alugadoEm);
         setLivro(livro);
         setLocatario(locatario);
