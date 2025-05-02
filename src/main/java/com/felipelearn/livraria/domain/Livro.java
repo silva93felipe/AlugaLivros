@@ -1,14 +1,19 @@
 package com.felipelearn.livraria.domain;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
 import com.felipelearn.livraria.exception.DomainException;
 import com.felipelearn.livraria.util.Utils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,10 +37,10 @@ public class Livro extends EntityBase {
     private boolean disponivel = true;
     @Column(name = "avaliacao")
     private int avalicao;
-    // @OneToMany(mappedBy = "livro")
-    // private List<Aluguel> aluguels;
-    // @OneToMany(mappedBy = "livro")
-    // private List<ComentarioLivro> comentarios;
+    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY)
+    private List<AluguelLivro> alugueis = new ArrayList<>();
+    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY)
+    private List<ComentarioLivro> comentarios = new ArrayList<>();
     private Livro(){}
     public Livro(String titulo, String autor, String editora, String imagem, int anoEdicao){
         
@@ -53,6 +58,12 @@ public class Livro extends EntityBase {
     //     this.aluguels = aluguels;
     // }
    
+    public List<AluguelLivro> getAlugueis() {
+        return alugueis;
+    }
+    public List<ComentarioLivro> getComentarios() {
+        return comentarios;
+    }
     public boolean isDisponivel() {
         return disponivel;
     }
