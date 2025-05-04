@@ -2,6 +2,8 @@ package com.felipelearn.livraria.domain;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.felipelearn.livraria.exception.DomainException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,9 +26,11 @@ public class AluguelLivro extends EntityBase{
     @Column(name = "entregue_em")
     private Date entregueEm;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "livro_id")
     private Livro livro;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "locatario_id")
     private Locatario locatario;
   

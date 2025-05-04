@@ -36,7 +36,7 @@ public class LivroController {
     }
 
     @PostMapping("{id}/alugar")
-    public ResponseEntity<ApiResponse>  alugar(@PathVariable Long id, @RequestBody String matricula){
+    public ResponseEntity<ApiResponse> alugar(@PathVariable Long id, @RequestBody String matricula){
         _livroService.alugar(id, matricula);   
         return ResponseEntity.noContent().build();
     }
@@ -56,6 +56,6 @@ public class LivroController {
     @PostMapping()
     public ResponseEntity<ApiResponse> create(@RequestBody LivroRequest request ){
         Livro newLivro = _livroService.create(request);
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), Constantes.SUCCESS, newLivro));
+        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponse(HttpStatus.CREATED.value(), Constantes.SUCCESS, newLivro)));
     }
 }

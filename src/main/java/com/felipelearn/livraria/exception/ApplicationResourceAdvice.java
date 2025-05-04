@@ -50,4 +50,9 @@ public class ApplicationResourceAdvice {
     public ApiResponse handleException(Exception exception){
         return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Houve um problema no momento. Tente novamente mais tarde.");
     }
+    @ExceptionHandler(UserInvalidException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse handleException(UserInvalidException exception){
+        return new ApiResponse(HttpStatus.BAD_GATEWAY.value(), false, exception.getMessage());
+    }
 }

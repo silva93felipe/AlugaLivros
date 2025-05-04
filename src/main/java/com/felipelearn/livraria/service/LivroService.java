@@ -37,7 +37,10 @@ public class LivroService implements ILivroService {
     }
 
     public List<Livro> getAll(){
-        return _livroRepository.findAll().stream().filter(l -> l.isDisponivel()).toList();
+        return _livroRepository.findAll()
+                                .stream()
+                                .filter(l -> l.isDisponivel())
+                                .toList();
     }
     
     public Livro getById(Long id){

@@ -2,6 +2,8 @@ package com.felipelearn.livraria.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ public class ComentarioLivro extends EntityBase{
     @Column(name = "descricao")
     private String descricao;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "livro_id")
     private Livro livro;
     private ComentarioLivro(){}
