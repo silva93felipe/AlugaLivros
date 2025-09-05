@@ -25,12 +25,12 @@ public class LocatarioController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAll(){
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _locatarioService.getAll()));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _locatarioService.getAll()));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id){
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _locatarioService.getById(id)));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _locatarioService.getById(id)));
     }
 
     @PostMapping()

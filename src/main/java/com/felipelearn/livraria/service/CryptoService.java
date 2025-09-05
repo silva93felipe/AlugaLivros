@@ -4,10 +4,11 @@ import org.jasypt.util.text.StrongTextEncryptor;
 
 public class CryptoService {
     private static StrongTextEncryptor encryptor;
+    private static final String KEY_CRYPTOR = "9ceff5e5-1efb-4b98-b89f-85f2763e1fa1";
     static{
         encryptor = new StrongTextEncryptor();
-        encryptor.setPassword("123456");
-        // APRENDER A USAR ISSO
+        encryptor.setPassword(KEY_CRYPTOR);
+        // APRENDER A USAR GETENV
         //encryptor.setPassword(System.getenv("ENCRYPT_KEY"));
     }
 

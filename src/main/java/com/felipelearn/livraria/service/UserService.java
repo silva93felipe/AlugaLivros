@@ -12,14 +12,16 @@ import com.felipelearn.livraria.util.Utils;
 @Service
 public class UserService implements IUserService{
     private final UserRepository _userRepository;
+    private final TokenService _tokenService;
 
-    public UserService(UserRepository _userRepository) {
-        this._userRepository = _userRepository;
+    public UserService(UserRepository userRepository, TokenService tokenService) {
+        this._userRepository = userRepository;
+        this._tokenService = tokenService;
     }
 
     @Override
     public String login(LoginRequest request) {
-        Usuario usuario = _userRepository.findByEmail(request.username());
+        Usuario usuario = _userRepository.findByEmail(request.email());
         if (usuario == null) 
             throw new UserInvalidException();
 
@@ -27,15 +29,14 @@ public class UserService implements IUserService{
         if(!passwordDescriptografado.equals(request.password()))
             throw new UserInvalidException();
 
-        return "";
+        return _tokenService.generate(usuario);
     }
 
     @Override
-    public void create(String matricula, String password) {
-        if(Utils.stringNotNullOrEmptyOrBlank(password) || Utils.stringNotNullOrEmptyOrBlank(matricula))
+    public void create(String email, String password) {
+        if(Utils.stringNotNullOrEmptyOrBlank(password) || Utils.stringNotNullOrEmptyOrBlank(password))
             throw new UserInvalidException();
-        Usuario newUsario = new Usuario(matricula, CryptoService.encrypt(password));
+        Usuario newUsario = new Usuario(email, CryptoService.encrypt(password));
         _userRepository.save(newUsario);
     }
-
 }

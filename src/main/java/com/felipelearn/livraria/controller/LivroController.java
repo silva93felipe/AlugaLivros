@@ -27,12 +27,12 @@ public class LivroController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAll(){
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _livroService.getAll()));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.getAll()));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id){
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), Constantes.SUCCESS, _livroService.getById(id)));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.getById(id)));
     }
 
     @PostMapping("{id}/alugar")
@@ -56,6 +56,6 @@ public class LivroController {
     @PostMapping()
     public ResponseEntity<ApiResponse> create(@RequestBody LivroRequest request ){
         Livro newLivro = _livroService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponse(HttpStatus.CREATED.value(), Constantes.SUCCESS, newLivro)));
+        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponse(Constantes.SUCCESS, newLivro)));
     }
 }

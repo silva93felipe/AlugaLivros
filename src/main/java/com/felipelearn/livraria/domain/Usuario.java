@@ -18,9 +18,10 @@ public class Usuario extends EntityBase {
     private String matricula;
     private String password;
     private TipoUsuarioEnum tipo;
+    private String email;
     private Usuario(){}
-    public Usuario(String matricula, String password){
-        this.matricula = matricula;
+    public Usuario(String email, String password){
+        this.email = email;
         this.password = password;
         this.tipo = TipoUsuarioEnum.ALUNO;
     }
@@ -38,5 +39,11 @@ public class Usuario extends EntityBase {
     }
     public void setPermissao(TipoUsuarioEnum tipo) {
         this.tipo = tipo;
+    }
+        public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
