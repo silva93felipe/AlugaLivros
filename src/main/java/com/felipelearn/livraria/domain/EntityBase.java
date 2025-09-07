@@ -12,5 +12,5 @@ public class EntityBase {
     @Column(name = "criado_em")
     private Date criadoEm = new Date();
     @Column(name = "atualizado_em")
-    private Date atualizandoEm = new Date();
+    private Date atualizadoEm = new Date();
 }

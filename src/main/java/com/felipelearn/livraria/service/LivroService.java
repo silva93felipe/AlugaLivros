@@ -1,9 +1,11 @@
 package com.felipelearn.livraria.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.felipelearn.livraria.dto.LivroRequest;
@@ -11,36 +13,36 @@ import com.felipelearn.livraria.exception.ComentarioInvalidoException;
 import com.felipelearn.livraria.exception.LivroAlugadoException;
 import com.felipelearn.livraria.exception.LivroDevolvidoException;
 import com.felipelearn.livraria.exception.LivroNotFoundException;
-import com.felipelearn.livraria.exception.LocatarioNotFoundException;
+import com.felipelearn.livraria.exception.UserInvalidException;
 import com.felipelearn.livraria.domain.AluguelLivro;
 import com.felipelearn.livraria.domain.ComentarioLivro;
 import com.felipelearn.livraria.domain.Livro;
-import com.felipelearn.livraria.domain.Locatario;
+import com.felipelearn.livraria.domain.Usuario;
 import com.felipelearn.livraria.repository.AluguelLivroRepository;
 import com.felipelearn.livraria.repository.ComentarioLivroRepository;
 import com.felipelearn.livraria.repository.LivroRepository;
+import com.felipelearn.livraria.repository.UserRepository;
 import com.felipelearn.livraria.service.interfaces.ILivroService;
+import com.felipelearn.livraria.util.Constantes;
 import com.felipelearn.livraria.util.Utils;
 
 @Service
 public class LivroService implements ILivroService {
     private final LivroRepository _livroRepository;
     private final AluguelLivroRepository _aluguelRepository;
-    private final LocatarioService _locatarioService;
     private final ComentarioLivroRepository _comentarioRepository;
+    private final UserRepository _userRepository;
 
-    public LivroService(LivroRepository livroRepository, AluguelLivroRepository aluguelRepository, LocatarioService locatarioService, ComentarioLivroRepository comentarioRepository){
-        this._livroRepository = livroRepository;
-        this._aluguelRepository = aluguelRepository;
-        this._locatarioService = locatarioService;
-        this._comentarioRepository = comentarioRepository;
+    public LivroService(LivroRepository livroRepository, AluguelLivroRepository aluguelRepository, ComentarioLivroRepository comentarioRepository, UserRepository userRepository){
+        _livroRepository = livroRepository;
+        _aluguelRepository = aluguelRepository;
+        _comentarioRepository = comentarioRepository;
+        _userRepository = userRepository;
+
     }
 
     public List<Livro> getAll(){
-        return _livroRepository.findAll()
-                                .stream()
-                                .filter(l -> l.isDisponivel())
-                                .toList();
+        return _livroRepository.findAll();
     }
     
     public Livro getById(Long id){
@@ -51,20 +53,25 @@ public class LivroService implements ILivroService {
         return livroDb.get();
     }
 
-    public boolean alugar(Long livroId, String matricula){
+    public boolean alugar(Long livroId, Long usuarioId){
         Livro livroDb = getById(livroId);
         if( !livroDb.alugar() ){
             throw new LivroAlugadoException();
         }
 
-        Locatario locatario =_locatarioService.findByMatricula(matricula);
-        if(locatario == null){
-            throw new LocatarioNotFoundException();
+        Optional<Usuario> usuario =_userRepository.findById(usuarioId);
+        if(!usuario.isPresent()){
+            throw new UserInvalidException();
         }
-        AluguelLivro newAluguel = new AluguelLivro(new Date(), livroDb, locatario);
+        AluguelLivro newAluguel = new AluguelLivro(new Date(), livroDb, usuario.get());
         _livroRepository.save(livroDb);
         _aluguelRepository.save(newAluguel);
-        return true;
+        return Constantes.SUCCESS;
+    }
+
+    public List<AluguelLivro> alugueis(Long livroId){
+        getById(livroId);
+        return _aluguelRepository.findAll();
     }
     
     public boolean devolver(Long livroId) {
@@ -75,16 +82,17 @@ public class LivroService implements ILivroService {
         _livroRepository.save(livroDb);
         Optional<AluguelLivro> aluguelDb  = _aluguelRepository.findAll()
                                    .stream()
-                                   .filter(e -> e.getLivro().getId() == livroId && e.getEntregueEm().equals(null))
+                                   .filter(e -> e.getLivro().equals(livroId) && e.getEntregueEm().equals(null))
                                    .findFirst();
         if(aluguelDb.isPresent()){
             aluguelDb.get().devolver(Calendar.getInstance().getTime());
             _aluguelRepository.save(aluguelDb.get());
-            return true;
+            return Constantes.SUCCESS;
         }
 
-        return false;
+        return Constantes.FAILURE;
     }
+    
 
     public Livro create(LivroRequest livro) {
         Livro newLivro = new Livro(livro.title(), livro.autor(), livro.editora(), livro.imagem(), livro.anoEdicao());
@@ -93,16 +101,19 @@ public class LivroService implements ILivroService {
     }
 
     @Override
-    public void comentar(Long id, String comentario) {
-        Optional<Livro> livroDb = _livroRepository.findById(id);
-        if( !livroDb.isPresent()){
-            throw new LivroNotFoundException();
-        }
+    public void comentar(Long livroId, String comentario) {
+        Livro livroDb = getById(livroId);
 
         if(Utils.stringNotNullOrEmptyOrBlank(comentario)){
             throw new ComentarioInvalidoException("Digite um comentário válido.");
         }
-        ComentarioLivro newComentario = new ComentarioLivro(comentario, livroDb.get());
+        ComentarioLivro newComentario = new ComentarioLivro(comentario, livroDb);
         _comentarioRepository.save(newComentario);
+    }
+
+    @Override
+    public List<ComentarioLivro> comentarios(Long livroId) {
+        getById(livroId);
+        return _comentarioRepository.findAll();
     }
 }

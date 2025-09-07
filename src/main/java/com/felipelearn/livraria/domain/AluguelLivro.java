@@ -32,19 +32,19 @@ public class AluguelLivro extends EntityBase{
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "locatario_id")
-    private Locatario locatario;
+    private Usuario usuario;
   
     private AluguelLivro(){}
-    public AluguelLivro(Date alugadoEm, Livro livro, Locatario locatario){
+    public AluguelLivro(Date alugadoEm, Livro livro, Usuario usuario){
         setAlugadoEm(alugadoEm);
         setLivro(livro);
-        setLocatario(locatario);
+        setUsuario(usuario);
     }
-    public Locatario getLocatario() {
-        return locatario;
+    public Usuario getUsuario() {
+        return usuario;
     }
-    public void setLocatario(Locatario locatario) {
-        this.locatario = locatario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     public Long getId() {
         return id;
@@ -71,7 +71,7 @@ public class AluguelLivro extends EntityBase{
         return livro;
     }
     public void setLivro(Livro livro) {
-        if(!livro.equals(null)){
+        if(livro.equals(null)){
             throw new DomainException("Deve associar um livro válido.");
         }
         this.livro = livro;

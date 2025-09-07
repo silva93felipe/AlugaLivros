@@ -43,20 +43,12 @@ public class Livro extends EntityBase {
     private List<ComentarioLivro> comentarios = new ArrayList<>();
     private Livro(){}
     public Livro(String titulo, String autor, String editora, String imagem, int anoEdicao){
-        
         setTitulo(titulo);
         setAutor(autor);
         setEditora(editora);
         setImagem(imagem);
         setAnoEdicao(anoEdicao);
     }
-
-    // public List<Aluguel> getAluguels() {
-    //     return aluguels;
-    // }
-    // public void setAluguels(List<Aluguel> aluguels) {
-    //     this.aluguels = aluguels;
-    // }
    
     public List<AluguelLivro> getAlugueis() {
         return alugueis;

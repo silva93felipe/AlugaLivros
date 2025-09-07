@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.felipelearn.livraria.domain.Livro;
 import com.felipelearn.livraria.dto.ApiResponse;
 import com.felipelearn.livraria.dto.LivroRequest;
+import com.felipelearn.livraria.mapping.LivroMapping;
 import com.felipelearn.livraria.service.interfaces.ILivroService;
 import com.felipelearn.livraria.util.Constantes;
 
 
 @RestController
-@RequestMapping("/livro")
+@RequestMapping("/livros")
 public class LivroController {
     private ILivroService _livroService;
    
@@ -27,35 +28,49 @@ public class LivroController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAll(){
-        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.getAll()));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.getAll().stream().filter(e -> e.isDisponivel()).map(e -> LivroMapping.toDto(e)), null));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id){
-        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.getById(id)));
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, LivroMapping.toDto(_livroService.getById(id)), null));
     }
 
-    @PostMapping("{id}/alugar")
-    public ResponseEntity<ApiResponse> alugar(@PathVariable Long id, @RequestBody String matricula){
-        _livroService.alugar(id, matricula);   
+    @PostMapping("{id}/alugueis")
+    public ResponseEntity<ApiResponse> alugar(@PathVariable Long id, @RequestBody Long usuarioId){
+        _livroService.alugar(id, usuarioId);   
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("{id}/devolver")
+    @GetMapping("{id}/alugueis")
+    public ResponseEntity<ApiResponse> alugueis(@PathVariable Long id){
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.alugueis(id).stream().filter(e -> e.getLivro().getId().equals(id)), null));   
+    }
+
+    @PostMapping("{id}/devolucoes")
     public ResponseEntity<ApiResponse> devolver(@PathVariable Long id){
          _livroService.devolver(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("{id}/comentar")
+    @PostMapping("{id}/comentarios")
     public ResponseEntity<ApiResponse> comentar(@PathVariable Long id, @RequestBody String comentario){
         _livroService.comentar(id, comentario);
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("{id}/comentarios")
+    public ResponseEntity<ApiResponse> comentarios(@PathVariable Long id){
+         return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, 
+                        _livroService.comentarios(id)
+                                    .stream()
+                                    .filter(e -> e.getLivro().getId().equals(id)),
+                                    null));
+    }
+
     @PostMapping()
     public ResponseEntity<ApiResponse> create(@RequestBody LivroRequest request ){
         Livro newLivro = _livroService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponse(Constantes.SUCCESS, newLivro)));
+        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponse(Constantes.SUCCESS, newLivro, null)));
     }
 }
