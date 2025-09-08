@@ -43,8 +43,13 @@ public class LivroController {
     }
 
     @GetMapping("{id}/alugueis")
-    public ResponseEntity<ApiResponse> alugueis(@PathVariable Long id){
-        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.alugueis(id).stream().filter(e -> e.getLivro().getId().equals(id)), null));   
+    public ResponseEntity<ApiResponse> alugueisByLivroId(@PathVariable Long id){
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.alugueisByLivroId(id), null));   
+    }
+
+    @GetMapping("/alugueis")
+    public ResponseEntity<ApiResponse> alugueis(){
+        return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, _livroService.alugueis(), null));   
     }
 
     @PostMapping("{id}/devolucoes")
@@ -59,7 +64,7 @@ public class LivroController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("{id}/comentarios")
+    @GetMapping("{id}/comentarios")
     public ResponseEntity<ApiResponse> comentarios(@PathVariable Long id){
          return ResponseEntity.ok(new ApiResponse( Constantes.SUCCESS, 
                         _livroService.comentarios(id)

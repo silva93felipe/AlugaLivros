@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,6 @@ import com.felipelearn.livraria.repository.ComentarioLivroRepository;
 import com.felipelearn.livraria.repository.LivroRepository;
 import com.felipelearn.livraria.repository.UserRepository;
 import com.felipelearn.livraria.service.interfaces.ILivroService;
-import com.felipelearn.livraria.util.Constantes;
 import com.felipelearn.livraria.util.Utils;
 
 @Service
@@ -53,7 +54,7 @@ public class LivroService implements ILivroService {
         return livroDb.get();
     }
 
-    public boolean alugar(Long livroId, Long usuarioId){
+    public void alugar(Long livroId, Long usuarioId){
         Livro livroDb = getById(livroId);
         if( !livroDb.alugar() ){
             throw new LivroAlugadoException();
@@ -66,15 +67,18 @@ public class LivroService implements ILivroService {
         AluguelLivro newAluguel = new AluguelLivro(new Date(), livroDb, usuario.get());
         _livroRepository.save(livroDb);
         _aluguelRepository.save(newAluguel);
-        return Constantes.SUCCESS;
     }
 
-    public List<AluguelLivro> alugueis(Long livroId){
+    public List<AluguelLivro> alugueisByLivroId(Long livroId){
         getById(livroId);
+        return _aluguelRepository.findAll().stream().filter(e -> e.getLivro().getId().equals(livroId)).toList();
+    }
+
+     public List<AluguelLivro> alugueis(){
         return _aluguelRepository.findAll();
     }
     
-    public boolean devolver(Long livroId) {
+    public void devolver(Long livroId) {
         Livro livroDb = getById(livroId);
         if( !livroDb.devolver() ){
             throw new LivroDevolvidoException();
@@ -82,15 +86,15 @@ public class LivroService implements ILivroService {
         _livroRepository.save(livroDb);
         Optional<AluguelLivro> aluguelDb  = _aluguelRepository.findAll()
                                    .stream()
-                                   .filter(e -> e.getLivro().equals(livroId) && e.getEntregueEm().equals(null))
+                                   .filter(e -> e.getLivro().getId().equals(livroId) && e.getEntregueEm() == null)
                                    .findFirst();
-        if(aluguelDb.isPresent()){
-            aluguelDb.get().devolver(Calendar.getInstance().getTime());
-            _aluguelRepository.save(aluguelDb.get());
-            return Constantes.SUCCESS;
+
+        if(!aluguelDb.isPresent()){
+           throw new IllegalArgumentException("Aluguel não encontrado para esse livro.");
         }
 
-        return Constantes.FAILURE;
+        aluguelDb.get().devolver(Calendar.getInstance().getTime());
+        _aluguelRepository.save(aluguelDb.get());
     }
     
 
